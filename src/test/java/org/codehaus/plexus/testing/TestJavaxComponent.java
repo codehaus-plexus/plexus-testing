@@ -20,20 +20,14 @@ package org.codehaus.plexus.testing;
  */
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
-import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-@PlexusTest
-class PlexusTestTest {
-
+@Named
+public class TestJavaxComponent {
     @Inject
-    private TestComponent testComponent;
+    private TestJavaxComponent2 testJavaxComponent2;
 
-    @Test
-    void dependencyShouldBeInjected() {
-        assertNotNull(testComponent);
-        assertNotNull(testComponent.getTestComponent2());
+    public TestJavaxComponent2 getTestComponent2() {
+        return testJavaxComponent2;
     }
 }

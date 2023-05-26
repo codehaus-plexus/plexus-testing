@@ -19,7 +19,21 @@ package org.codehaus.plexus.testing;
  * under the License.
  */
 
-import javax.inject.Named;
+import jakarta.inject.Inject;
+import org.junit.jupiter.api.Test;
 
-@Named
-public class TestComponent2 {}
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+@PlexusTest
+class PlexusTestJakartaTest {
+
+    @Inject
+    private TestJakartaComponent testJakartaComponent;
+
+    @Test
+    void dependencyShouldBeInjected() {
+        assertNotNull(testJakartaComponent);
+        assertNotNull(testJakartaComponent.getTestJakartaComponent2());
+        assertNotNull(testJakartaComponent.getTestJavaxComponent2());
+    }
+}
