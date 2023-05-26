@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
@@ -17,8 +16,8 @@
   <scm>
     <connection>scm:git:git@github.com:codehaus-plexus/plexus-testing.git</connection>
     <developerConnection>scm:git:git@github.com:codehaus-plexus/plexus-testing.git</developerConnection>
-    <url>http://github.com/codehaus-plexus/plexus-testing</url>
     <tag>HEAD</tag>
+    <url>http://github.com/codehaus-plexus/plexus-testing</url>
   </scm>
   <issueManagement>
     <system>github</system>
@@ -32,27 +31,8 @@
   </distributionManagement>
 
   <properties>
-    <cobertura.skip>true</cobertura.skip>
-    <javaVersion>8</javaVersion>
-    <junit-jupiter.version>5.9.3</junit-jupiter.version>
     <project.build.outputTimestamp>2021-09-21T23:45:11Z</project.build.outputTimestamp>
   </properties>
-  
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-checkstyle-plugin</artifactId>
-        <dependencies>
-          <dependency>
-            <groupId>org.apache.maven.shared</groupId>
-            <artifactId>maven-shared-resources</artifactId>
-            <version>5</version>
-          </dependency>
-        </dependencies>
-      </plugin>
-    </plugins>
-  </build>
 
   <dependencies>
     <dependency>
@@ -68,12 +48,10 @@
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
-      <version>${junit-jupiter.version}</version>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>
-      <version>${junit-jupiter.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
