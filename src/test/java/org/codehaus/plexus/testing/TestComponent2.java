@@ -22,6 +22,4 @@ package org.codehaus.plexus.testing;
 import javax.inject.Named;
 
 @Named
-public class TestComponent2
-{
-}
+public class TestComponent2 {}

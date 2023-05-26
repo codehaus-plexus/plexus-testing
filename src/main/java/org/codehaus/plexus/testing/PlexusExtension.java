@@ -65,51 +65,46 @@ import org.junit.jupiter.api.extension.ExtensionContext;
  * @author <a href="mailto:michal@codehaus.org">Michal Maczka</a>
  * @author Guillaume Nodet
  */
-public class PlexusExtension implements BeforeEachCallback, AfterEachCallback
-{
+public class PlexusExtension implements BeforeEachCallback, AfterEachCallback {
     private ExtensionContext context;
     private PlexusContainer container;
 
     private static String basedir;
 
     @Override
-    public void beforeEach( ExtensionContext context )
-            throws Exception
-    {
+    public void beforeEach(ExtensionContext context) throws Exception {
         basedir = getBasedir();
         this.context = context;
 
-        getContainer().addComponent( getContainer(), PlexusContainer.class.getName() );
+        getContainer().addComponent(getContainer(), PlexusContainer.class.getName());
 
-        ( (DefaultPlexusContainer) getContainer() ).addPlexusInjector( Collections.emptyList(),
-                binder -> binder.requestInjection( context.getRequiredTestInstance() ) );
+        ((DefaultPlexusContainer) getContainer())
+                .addPlexusInjector(
+                        Collections.emptyList(), binder -> binder.requestInjection(context.getRequiredTestInstance()));
     }
 
-    @SuppressWarnings( "ResultOfMethodCallIgnored" )
-    protected void setupContainer()
-    {
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    protected void setupContainer() {
         // ----------------------------------------------------------------------------
         // Context Setup
         // ----------------------------------------------------------------------------
 
         DefaultContext context = new DefaultContext();
 
-        context.put( "basedir", getBasedir() );
+        context.put("basedir", getBasedir());
 
-        customizeContext( context );
+        customizeContext(context);
 
-        boolean hasPlexusHome = context.contains( "plexus.home" );
+        boolean hasPlexusHome = context.contains("plexus.home");
 
-        if ( !hasPlexusHome )
-        {
-            File f = getTestFile( "target/plexus-home" );
+        if (!hasPlexusHome) {
+            File f = getTestFile("target/plexus-home");
 
-            if ( !f.isDirectory() )
-            {
+            if (!f.isDirectory()) {
                 f.mkdir();
             }
 
-            context.put( "plexus.home", f.getAbsolutePath() );
+            context.put("plexus.home", f.getAbsolutePath());
         }
 
         // ----------------------------------------------------------------------------
@@ -118,30 +113,23 @@ public class PlexusExtension implements BeforeEachCallback, AfterEachCallback
 
         String config = getCustomConfigurationName();
 
-        ContainerConfiguration containerConfiguration = new DefaultContainerConfiguration()
-                .setName( "test" )
-                .setContext( context.getContextData() );
+        ContainerConfiguration containerConfiguration =
+                new DefaultContainerConfiguration().setName("test").setContext(context.getContextData());
 
-        if ( config != null )
-        {
-            containerConfiguration.setContainerConfiguration( config );
-        }
-        else
-        {
-            String resource = getConfigurationName( null );
+        if (config != null) {
+            containerConfiguration.setContainerConfiguration(config);
+        } else {
+            String resource = getConfigurationName(null);
 
-            containerConfiguration.setContainerConfiguration( resource );
+            containerConfiguration.setContainerConfiguration(resource);
         }
 
-        customizeContainerConfiguration( containerConfiguration );
+        customizeContainerConfiguration(containerConfiguration);
 
-        try
-        {
-            container = new DefaultPlexusContainer( containerConfiguration );
-        }
-        catch ( PlexusContainerException e )
-        {
-            throw new IllegalArgumentException( "Failed to create plexus container.", e );
+        try {
+            container = new DefaultPlexusContainer(containerConfiguration);
+        } catch (PlexusContainerException e) {
+            throw new IllegalArgumentException("Failed to create plexus container.", e);
         }
     }
 
@@ -151,57 +139,43 @@ public class PlexusExtension implements BeforeEachCallback, AfterEachCallback
      *
      * @param containerConfiguration {@link ContainerConfiguration}.
      */
-    protected void customizeContainerConfiguration( ContainerConfiguration containerConfiguration )
-    {
-        containerConfiguration.setAutoWiring( true );
-        containerConfiguration.setClassPathScanning( PlexusConstants.SCANNING_INDEX );
+    protected void customizeContainerConfiguration(ContainerConfiguration containerConfiguration) {
+        containerConfiguration.setAutoWiring(true);
+        containerConfiguration.setClassPathScanning(PlexusConstants.SCANNING_INDEX);
     }
 
-    protected void customizeContext( Context context )
-    {
-    }
+    protected void customizeContext(Context context) {}
 
-    protected PlexusConfiguration customizeComponentConfiguration()
-    {
+    protected PlexusConfiguration customizeComponentConfiguration() {
         return null;
     }
 
     @Override
-    public void afterEach( ExtensionContext context )
-            throws Exception
-    {
-        if ( container != null )
-        {
+    public void afterEach(ExtensionContext context) throws Exception {
+        if (container != null) {
             container.dispose();
 
             container = null;
         }
     }
 
-    public PlexusContainer getContainer()
-    {
-        if ( container == null )
-        {
+    public PlexusContainer getContainer() {
+        if (container == null) {
             setupContainer();
         }
 
         return container;
     }
 
-    protected InputStream getConfiguration()
-            throws Exception
-    {
-        return getConfiguration( null );
+    protected InputStream getConfiguration() throws Exception {
+        return getConfiguration(null);
     }
 
-    protected InputStream getConfiguration( String subname )
-            throws Exception
-    {
-        return getResourceAsStream( getConfigurationName( subname ) );
+    protected InputStream getConfiguration(String subname) throws Exception {
+        return getResourceAsStream(getConfigurationName(subname));
     }
 
-    protected String getCustomConfigurationName()
-    {
+    protected String getCustomConfigurationName() {
         return null;
     }
 
@@ -214,29 +188,22 @@ public class PlexusExtension implements BeforeEachCallback, AfterEachCallback
      * @param subname the subname
      * @return A configruation name
      */
-    protected String getConfigurationName( String subname )
-    {
+    protected String getConfigurationName(String subname) {
         Class<?> testClass = context.getRequiredTestClass();
-        for ( Class<?> clazz = testClass;
-              clazz != null;
-              clazz = clazz.getSuperclass() )
-        {
-            String name = clazz.getName().replace( '.', '/' ) + ".xml";
-            if ( testClass.getClassLoader().getResource( name ) != null )
-            {
+        for (Class<?> clazz = testClass; clazz != null; clazz = clazz.getSuperclass()) {
+            String name = clazz.getName().replace('.', '/') + ".xml";
+            if (testClass.getClassLoader().getResource(name) != null) {
                 return name;
             }
         }
         return null;
     }
 
-    protected InputStream getResourceAsStream( String resource )
-    {
-        return context.getRequiredTestClass().getResourceAsStream( resource );
+    protected InputStream getResourceAsStream(String resource) {
+        return context.getRequiredTestClass().getResourceAsStream(resource);
     }
 
-    protected ClassLoader getClassLoader()
-    {
+    protected ClassLoader getClassLoader() {
         return context.getRequiredTestClass().getClassLoader();
     }
 
@@ -244,98 +211,75 @@ public class PlexusExtension implements BeforeEachCallback, AfterEachCallback
     // Container access
     // ----------------------------------------------------------------------
 
-    @SuppressWarnings( "unchecked" )
-    protected <T> T lookup( String componentKey )
-            throws ComponentLookupException
-    {
-        return (T) getContainer().lookup( componentKey );
+    @SuppressWarnings("unchecked")
+    protected <T> T lookup(String componentKey) throws ComponentLookupException {
+        return (T) getContainer().lookup(componentKey);
     }
 
-    @SuppressWarnings( "unchecked" )
-    protected <T> T lookup( String role,
-                            String roleHint )
-            throws ComponentLookupException
-    {
-        return (T) getContainer().lookup( role, roleHint );
+    @SuppressWarnings("unchecked")
+    protected <T> T lookup(String role, String roleHint) throws ComponentLookupException {
+        return (T) getContainer().lookup(role, roleHint);
     }
 
-    protected <T> T lookup( Class<T> componentClass )
-            throws ComponentLookupException
-    {
-        return getContainer().lookup( componentClass );
+    protected <T> T lookup(Class<T> componentClass) throws ComponentLookupException {
+        return getContainer().lookup(componentClass);
     }
 
-    protected <T> T lookup( Class<T> componentClass, String roleHint )
-            throws ComponentLookupException
-    {
-        return getContainer().lookup( componentClass, roleHint );
+    protected <T> T lookup(Class<T> componentClass, String roleHint) throws ComponentLookupException {
+        return getContainer().lookup(componentClass, roleHint);
     }
 
-    protected void release( Object component )
-            throws ComponentLifecycleException
-    {
-        getContainer().release( component );
+    protected void release(Object component) throws ComponentLifecycleException {
+        getContainer().release(component);
     }
 
     // ----------------------------------------------------------------------
     // Helper methods for sub classes
     // ----------------------------------------------------------------------
 
-    public static File getTestFile( String path )
-    {
-        return new File( getBasedir(), path );
+    public static File getTestFile(String path) {
+        return new File(getBasedir(), path);
     }
 
-    public static File getTestFile( String basedir,
-                                    String path )
-    {
-        File basedirFile = new File( basedir );
+    public static File getTestFile(String basedir, String path) {
+        File basedirFile = new File(basedir);
 
-        if ( !basedirFile.isAbsolute() )
-        {
-            basedirFile = getTestFile( basedir );
+        if (!basedirFile.isAbsolute()) {
+            basedirFile = getTestFile(basedir);
         }
 
-        return new File( basedirFile, path );
+        return new File(basedirFile, path);
     }
 
-    public static String getTestPath( String path )
-    {
-        return getTestFile( path ).getAbsolutePath();
+    public static String getTestPath(String path) {
+        return getTestFile(path).getAbsolutePath();
     }
 
-    public static String getTestPath( String basedir,
-                                      String path )
-    {
-        return getTestFile( basedir, path ).getAbsolutePath();
+    public static String getTestPath(String basedir, String path) {
+        return getTestFile(basedir, path).getAbsolutePath();
     }
 
-    public static String getBasedir()
-    {
-        if ( basedir != null )
-        {
+    public static String getBasedir() {
+        if (basedir != null) {
             return basedir;
         }
 
-        basedir = System.getProperty( "basedir" );
+        basedir = System.getProperty("basedir");
 
-        if ( basedir == null )
-        {
-            basedir = new File( "" ).getAbsolutePath();
+        if (basedir == null) {
+            basedir = new File("").getAbsolutePath();
         }
 
         return basedir;
     }
 
-    public String getTestConfiguration()
-    {
-        return getTestConfiguration( context.getRequiredTestClass() );
+    public String getTestConfiguration() {
+        return getTestConfiguration(context.getRequiredTestClass());
     }
 
-    public static String getTestConfiguration( Class<?> clazz )
-    {
-        String s = clazz.getName().replace( '.', '/' );
+    public static String getTestConfiguration(Class<?> clazz) {
+        String s = clazz.getName().replace('.', '/');
 
-        return s.substring( 0, s.indexOf( "$" ) ) + ".xml";
+        return s.substring(0, s.indexOf("$")) + ".xml";
     }
 }

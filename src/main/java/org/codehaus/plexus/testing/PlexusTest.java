@@ -29,10 +29,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 /**
  * Plexus test
  */
-@Retention( RetentionPolicy.RUNTIME )
-@ExtendWith( PlexusExtension.class )
-@Target( ElementType.TYPE )
-public @interface PlexusTest
-{
-
-}
+@Retention(RetentionPolicy.RUNTIME)
+@ExtendWith(PlexusExtension.class)
+@Target(ElementType.TYPE)
+public @interface PlexusTest {}
