@@ -19,23 +19,21 @@ package org.codehaus.plexus.testing;
  * under the License.
  */
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import javax.inject.Inject;
 
 import org.junit.jupiter.api.Test;
 
-import javax.inject.Inject;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @PlexusTest
-class PlexusTestTest
-{
+class PlexusTestTest {
 
     @Inject
     private TestComponent testComponent;
 
     @Test
-    void dependencyShouldBeInjected()
-    {
-        assertNotNull( testComponent );
-        assertNotNull( testComponent.getTestComponent2() );
+    void dependencyShouldBeInjected() {
+        assertNotNull(testComponent);
+        assertNotNull(testComponent.getTestComponent2());
     }
 }
