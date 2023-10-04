@@ -17,7 +17,7 @@
     <connection>scm:git:git@github.com:codehaus-plexus/plexus-testing.git</connection>
     <developerConnection>scm:git:git@github.com:codehaus-plexus/plexus-testing.git</developerConnection>
     <tag>HEAD</tag>
-    <url>http://github.com/codehaus-plexus/plexus-testing</url>
+    <url>https://github.com/codehaus-plexus/plexus-testing</url>
   </scm>
   <issueManagement>
     <system>github</system>
@@ -31,9 +31,6 @@
   </distributionManagement>
 
   <properties>
-    <!-- remove with parent upgrade -->
-    <maven.compiler.source>${javaVersion}</maven.compiler.source>
-    <maven.compiler.target>${javaVersion}</maven.compiler.target>
     <project.build.outputTimestamp>2021-09-21T23:45:11Z</project.build.outputTimestamp>
   </properties>
 
