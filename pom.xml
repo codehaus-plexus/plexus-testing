@@ -9,7 +9,7 @@
   </parent>
 
   <artifactId>plexus-testing</artifactId>
-  <version>1.2.0</version>
+  <version>1.2.1-SNAPSHOT</version>
 
   <name>Plexus Testing</name>
 
@@ -31,7 +31,7 @@
   </distributionManagement>
 
   <properties>
-    <project.build.outputTimestamp>2023-10-21T17:25:06Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2023-10-21T17:27:26Z</project.build.outputTimestamp>
   </properties>
 
   <dependencies>
