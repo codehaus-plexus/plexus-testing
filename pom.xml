@@ -9,14 +9,14 @@
   </parent>
 
   <artifactId>plexus-testing</artifactId>
-  <version>1.1.1-SNAPSHOT</version>
+  <version>1.2.0</version>
 
   <name>Plexus Testing</name>
 
   <scm>
     <connection>scm:git:git@github.com:codehaus-plexus/plexus-testing.git</connection>
     <developerConnection>scm:git:git@github.com:codehaus-plexus/plexus-testing.git</developerConnection>
-    <tag>HEAD</tag>
+    <tag>plexus-testing-1.2.0</tag>
     <url>https://github.com/codehaus-plexus/plexus-testing</url>
   </scm>
   <issueManagement>
@@ -31,7 +31,7 @@
   </distributionManagement>
 
   <properties>
-    <project.build.outputTimestamp>2021-09-21T23:45:11Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2023-10-21T17:25:06Z</project.build.outputTimestamp>
   </properties>
 
   <dependencies>
