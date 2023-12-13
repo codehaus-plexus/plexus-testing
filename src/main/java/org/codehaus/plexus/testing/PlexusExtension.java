@@ -74,13 +74,18 @@ public class PlexusExtension implements BeforeEachCallback, AfterEachCallback {
     @Override
     public void beforeEach(ExtensionContext context) throws Exception {
         basedir = getBasedir();
-        this.context = context;
+
+        setContext(context);
 
         getContainer().addComponent(getContainer(), PlexusContainer.class.getName());
 
         ((DefaultPlexusContainer) getContainer())
                 .addPlexusInjector(
                         Collections.emptyList(), binder -> binder.requestInjection(context.getRequiredTestInstance()));
+    }
+
+    protected void setContext(ExtensionContext context) {
+        this.context = context;
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
