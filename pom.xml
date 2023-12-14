@@ -14,8 +14,8 @@
   <name>Plexus Testing</name>
 
   <scm>
-    <connection>scm:git:git@github.com:codehaus-plexus/plexus-testing.git</connection>
-    <developerConnection>scm:git:git@github.com:codehaus-plexus/plexus-testing.git</developerConnection>
+    <connection>scm:git:https://github.com/codehaus-plexus/plexus-testing.git</connection>
+    <developerConnection>${project.scm.connection}</developerConnection>
     <tag>plexus-testing-1.2.0</tag>
     <url>https://github.com/codehaus-plexus/plexus-testing</url>
   </scm>
