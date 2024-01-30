@@ -23,6 +23,7 @@ import jakarta.inject.Inject;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 @PlexusTest
 class PlexusTestJakartaTest {
@@ -34,6 +35,12 @@ class PlexusTestJakartaTest {
     void dependencyShouldBeInjected() {
         assertNotNull(testJakartaComponent);
         assertNotNull(testJakartaComponent.getTestJakartaComponent2());
+        assertNotNull(testJakartaComponent.getTestJakartaComponent3Named());
+        assertNull(testJakartaComponent.getTestJakartaComponent3NullableJavax());
+        assertNull(testJakartaComponent.getTestJakartaComponent3NullableJakarta());
+
+        assertNotNull(testJakartaComponent.getTestJavaxComponent2());
+        assertNotNull(testJakartaComponent.getTestJavaxComponent2());
         assertNotNull(testJakartaComponent.getTestJavaxComponent2());
     }
 }
