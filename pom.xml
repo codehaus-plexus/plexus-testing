@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.codehaus.plexus</groupId>
     <artifactId>plexus</artifactId>
-    <version>16</version>
+    <version>17</version>
   </parent>
 
   <artifactId>plexus-testing</artifactId>
@@ -16,7 +16,7 @@
   <scm>
     <connection>scm:git:https://github.com/codehaus-plexus/plexus-testing.git</connection>
     <developerConnection>${project.scm.connection}</developerConnection>
-    <tag>plexus-testing-1.2.0</tag>
+    <tag>HEAD</tag>
     <url>https://github.com/codehaus-plexus/plexus-testing</url>
   </scm>
   <issueManagement>
@@ -31,6 +31,7 @@
   </distributionManagement>
 
   <properties>
+    <versions.eclipse.sisu>0.9.0.M2</versions.eclipse.sisu>
     <project.build.outputTimestamp>2023-12-14T13:10:41Z</project.build.outputTimestamp>
   </properties>
 
@@ -38,12 +39,12 @@
     <dependency>
       <groupId>org.eclipse.sisu</groupId>
       <artifactId>org.eclipse.sisu.plexus</artifactId>
-      <version>0.9.0.M2</version>
+      <version>${versions.eclipse.sisu}</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.sisu</groupId>
       <artifactId>org.eclipse.sisu.inject</artifactId>
-      <version>0.9.0.M2</version>
+      <version>${versions.eclipse.sisu}</version>
     </dependency>
     <dependency>
       <groupId>com.google.inject</groupId>
