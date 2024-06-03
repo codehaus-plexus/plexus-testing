@@ -31,7 +31,7 @@
   </distributionManagement>
 
   <properties>
-    <versions.eclipse.sisu>0.9.0.M2</versions.eclipse.sisu>
+    <versions.eclipse.sisu>0.9.0.M3</versions.eclipse.sisu>
     <project.build.outputTimestamp>2023-12-14T13:10:41Z</project.build.outputTimestamp>
   </properties>
 
