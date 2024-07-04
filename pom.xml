@@ -9,14 +9,14 @@
   </parent>
 
   <artifactId>plexus-testing</artifactId>
-  <version>1.4.0</version>
+  <version>1.4.1-SNAPSHOT</version>
 
   <name>Plexus Testing</name>
 
   <scm>
     <connection>scm:git:https://github.com/codehaus-plexus/plexus-testing.git</connection>
     <developerConnection>${project.scm.connection}</developerConnection>
-    <tag>plexus-testing-1.4.0</tag>
+    <tag>HEAD</tag>
     <url>https://github.com/codehaus-plexus/plexus-testing</url>
   </scm>
   <issueManagement>
@@ -32,7 +32,7 @@
 
   <properties>
     <versions.eclipse.sisu>0.9.0.M3</versions.eclipse.sisu>
-    <project.build.outputTimestamp>2024-07-04T13:26:15Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2024-07-04T13:26:24Z</project.build.outputTimestamp>
   </properties>
 
   <dependencyManagement>
