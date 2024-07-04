@@ -19,7 +19,7 @@ package org.codehaus.plexus.testing;
  * under the License.
  */
 
-import javax.inject.Named;
+import jakarta.inject.Named;
 
 @Named("someComponent")
 public class TestJakartaComponent3 {}

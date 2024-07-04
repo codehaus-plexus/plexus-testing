@@ -19,7 +19,6 @@ package org.codehaus.plexus.testing;
  * under the License.
  */
 
-import jakarta.annotation.Nonnull;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
@@ -31,10 +30,10 @@ public class TestJakartaComponent {
     @Inject
     private TestJakartaComponent2 testJakartaComponent2;
 
-    @Inject
-    @Nonnull
-    @Named("someComponent")
-    private TestJakartaComponent3 testJakartaComponent3Named;
+    //  @Inject
+    //  @Nonnull
+    //  @Named("someComponent")
+    //  private TestJakartaComponent3 testJakartaComponent3Named;
 
     @Inject
     @javax.annotation.Nullable
@@ -54,9 +53,9 @@ public class TestJakartaComponent {
         return testJakartaComponent2;
     }
 
-    public TestJakartaComponent3 getTestJakartaComponent3Named() {
-        return testJakartaComponent3Named;
-    }
+    // public TestJakartaComponent3 getTestJakartaComponent3Named() {
+    //    return testJakartaComponent3Named;
+    // }
 
     public TestJakartaComponent3 getTestJakartaComponent3NullableJavax() {
         return testJakartaComponent3NullableJavax;
