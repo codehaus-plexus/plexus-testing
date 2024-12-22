@@ -31,6 +31,7 @@
   </distributionManagement>
 
   <properties>
+    <junit5Version>5.10.2</junit5Version>
     <versions.eclipse.sisu>0.9.0.M3</versions.eclipse.sisu>
     <project.build.outputTimestamp>2024-07-04T13:26:24Z</project.build.outputTimestamp>
   </properties>
