@@ -42,7 +42,7 @@
         <groupId>com.google.guava</groupId>
         <artifactId>guava</artifactId>
         <!-- overwrite due to CVE-2023-2976 in Guice transitive dependencies -->
-        <version>33.4.0-jre</version>
+        <version>33.4.5-jre</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
