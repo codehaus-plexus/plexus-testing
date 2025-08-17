@@ -71,6 +71,12 @@ public class PlexusExtension implements BeforeEachCallback, AfterEachCallback {
 
     private static String basedir;
 
+    static {
+        if (System.getProperty("guice_custom_class_loading", "").trim().isEmpty()) {
+            System.setProperty("guice_custom_class_loading", "CHILD");
+        }
+    }
+
     @Override
     public void beforeEach(ExtensionContext context) throws Exception {
         basedir = getBasedir();
