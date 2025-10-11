@@ -35,18 +35,14 @@
     <project.build.outputTimestamp>2025-08-18T20:50:45Z</project.build.outputTimestamp>
   </properties>
 
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>com.google.guava</groupId>
-        <artifactId>guava</artifactId>
-        <!-- overwrite due to CVE-2023-2976 in Guice transitive dependencies -->
-        <version>33.5.0-jre</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
   <dependencies>
+    <!-- use direct dependency to override version such dependencyManagement are not transitive in Maven 3.x -->
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <!-- overwrite due to CVE-2023-2976 in Guice transitive dependencies -->
+      <version>33.5.0-jre</version>
+    </dependency>
     <dependency>
       <groupId>org.eclipse.sisu</groupId>
       <artifactId>org.eclipse.sisu.plexus</artifactId>
