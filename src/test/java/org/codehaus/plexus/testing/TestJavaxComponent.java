@@ -19,6 +19,7 @@ package org.codehaus.plexus.testing;
  * under the License.
  */
 
+// START SNIPPET: test-component
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -31,3 +32,4 @@ public class TestJavaxComponent {
         return testJavaxComponent2;
     }
 }
+// END SNIPPET: test-component
