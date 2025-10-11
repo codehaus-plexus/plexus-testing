@@ -19,7 +19,9 @@ package org.codehaus.plexus.testing;
  * under the License.
  */
 
+// START SNIPPET: test-component2
 import javax.inject.Named;
 
 @Named
 public class TestJavaxComponent2 {}
+// END SNIPPET: test-component2

@@ -12,6 +12,8 @@
   <version>1.6.1-SNAPSHOT</version>
 
   <name>Plexus Testing</name>
+  <description>Library to help testing plexus components</description>
+  <url>https://codehaus-plexus.github.io/plexus-testing/</url>
 
   <scm>
     <connection>scm:git:https://github.com/codehaus-plexus/plexus-testing.git</connection>
@@ -19,10 +21,12 @@
     <tag>HEAD</tag>
     <url>https://github.com/codehaus-plexus/plexus-testing</url>
   </scm>
+
   <issueManagement>
     <system>github</system>
     <url>https://github.com/codehaus-plexus/plexus-testing/issues</url>
   </issueManagement>
+
   <distributionManagement>
     <site>
       <id>github:gh-pages</id>
@@ -70,4 +74,26 @@
     </dependency>
   </dependencies>
 
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-scm-publish-plugin</artifactId>
+        <configuration>
+          <content>${project.reporting.outputDirectory}</content>
+          <!-- mono-module doesn't require site:stage -->
+        </configuration>
+        <executions>
+          <execution>
+            <id>scm-publish</id>
+            <!-- deploy site with maven-scm-publish-plugin -->
+            <goals>
+              <goal>publish-scm</goal>
+            </goals>
+            <phase>site-deploy</phase>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 </project>

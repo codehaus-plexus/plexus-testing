@@ -18,7 +18,7 @@ package org.codehaus.plexus.testing;
  * specific language governing permissions and limitations
  * under the License.
  */
-
+// START SNIPPET: test-class
 import javax.inject.Inject;
 
 import org.junit.jupiter.api.Test;
@@ -37,3 +37,4 @@ class PlexusTestJavaxTest {
         assertNotNull(testJavaxComponent.getTestComponent2());
     }
 }
+// END SNIPPET: test-class
