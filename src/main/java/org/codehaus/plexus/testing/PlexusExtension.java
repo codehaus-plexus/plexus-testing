@@ -58,7 +58,7 @@ import org.junit.jupiter.api.extension.ExtensionContext;
  * This is a slightly modified version of the original plexus class
  * available at https://raw.githubusercontent.com/codehaus-plexus/plexus-containers/master/plexus-container-default/
  *              src/main/java/org/codehaus/plexus/PlexusTestCase.java
- * in order to migrate the tests to JUnit 4.
+ * in order to migrate the tests to JUnit 5.
  *
  * @author Jason van Zyl
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
@@ -94,7 +94,6 @@ public class PlexusExtension implements BeforeEachCallback, AfterEachCallback {
         this.context = context;
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     protected void setupContainer() {
         // ----------------------------------------------------------------------------
         // Context Setup
@@ -136,12 +135,14 @@ public class PlexusExtension implements BeforeEachCallback, AfterEachCallback {
         }
 
         customizeContainerConfiguration(containerConfiguration);
+        testInstanceCustomizeContainerConfiguration(containerConfiguration);
 
         try {
             container = new DefaultPlexusContainer(containerConfiguration);
         } catch (PlexusContainerException e) {
             throw new IllegalArgumentException("Failed to create plexus container.", e);
         }
+        testInstanceCustomizeContainer(container);
     }
 
     /**
@@ -153,6 +154,20 @@ public class PlexusExtension implements BeforeEachCallback, AfterEachCallback {
     protected void customizeContainerConfiguration(ContainerConfiguration containerConfiguration) {
         containerConfiguration.setAutoWiring(true);
         containerConfiguration.setClassPathScanning(PlexusConstants.SCANNING_INDEX);
+    }
+
+    private void testInstanceCustomizeContainerConfiguration(ContainerConfiguration containerConfiguration) {
+        Object testInstance = context.getRequiredTestInstance();
+        if (testInstance instanceof PlexusTestConfiguration) {
+            ((PlexusTestConfiguration) testInstance).customizeConfiguration(containerConfiguration);
+        }
+    }
+
+    private void testInstanceCustomizeContainer(PlexusContainer container) {
+        Object testInstance = context.getRequiredTestInstance();
+        if (testInstance instanceof PlexusTestConfiguration) {
+            ((PlexusTestConfiguration) testInstance).customizeContainer(container);
+        }
     }
 
     protected void customizeContext(Context context) {}
