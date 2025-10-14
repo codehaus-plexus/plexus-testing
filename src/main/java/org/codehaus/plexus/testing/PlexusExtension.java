@@ -71,6 +71,11 @@ public class PlexusExtension implements BeforeEachCallback, AfterEachCallback {
 
     private static String basedir;
 
+    /**
+     *  The base directory for the test instance
+     */
+    private String testBasedir;
+
     static {
         if (System.getProperty("guice_custom_class_loading", "").trim().isEmpty()) {
             System.setProperty("guice_custom_class_loading", "CHILD");
@@ -79,7 +84,6 @@ public class PlexusExtension implements BeforeEachCallback, AfterEachCallback {
 
     @Override
     public void beforeEach(ExtensionContext context) throws Exception {
-        basedir = getBasedir();
 
         setContext(context);
 
@@ -101,7 +105,7 @@ public class PlexusExtension implements BeforeEachCallback, AfterEachCallback {
 
         DefaultContext context = new DefaultContext();
 
-        context.put("basedir", getBasedir());
+        context.put("basedir", getTestBasedir());
 
         customizeContext(context);
 
@@ -183,6 +187,29 @@ public class PlexusExtension implements BeforeEachCallback, AfterEachCallback {
 
             container = null;
         }
+    }
+
+    /**
+     * The base directory for the test instance. By default, this is the same as the basedir.
+     *
+     * @return the testBasedir
+     * @since 1.7.0
+     */
+    protected String getTestBasedir() {
+        if (testBasedir == null) {
+            testBasedir = getBasedir();
+        }
+        return testBasedir;
+    }
+
+    /**
+     * Set the base directory for the test instance. By default, this is the same as the basedir.
+     *
+     * @param testBasedir the testBasedir for the test instance
+     * @since 1.7.0
+     */
+    protected void setTestBasedir(String testBasedir) {
+        this.testBasedir = testBasedir;
     }
 
     public PlexusContainer getContainer() {
