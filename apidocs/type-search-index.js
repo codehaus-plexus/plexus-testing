@@ -1,1 +1,1 @@
-typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"org.codehaus.plexus.testing","l":"PlexusExtension"},{"p":"org.codehaus.plexus.testing","l":"PlexusTest"}];updateSearchResults();
+typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"org.codehaus.plexus.testing","l":"PlexusExtension"},{"p":"org.codehaus.plexus.testing","l":"PlexusTest"},{"p":"org.codehaus.plexus.testing","l":"PlexusTestConfiguration"}];updateSearchResults();
