@@ -36,8 +36,8 @@ package org.codehaus.plexus.testing;
  */
 
 import java.io.File;
-import java.io.InputStream;
 import java.util.Collections;
+import java.util.Optional;
 
 import org.codehaus.plexus.ContainerConfiguration;
 import org.codehaus.plexus.DefaultContainerConfiguration;
@@ -45,9 +45,6 @@ import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.PlexusContainerException;
-import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
-import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
-import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.context.DefaultContext;
 import org.junit.jupiter.api.extension.AfterEachCallback;
@@ -66,15 +63,13 @@ import org.junit.jupiter.api.extension.ExtensionContext;
  * @author Guillaume Nodet
  */
 public class PlexusExtension implements BeforeEachCallback, AfterEachCallback {
-    private ExtensionContext context;
-    private PlexusContainer container;
 
-    private static String basedir;
+    private static final ExtensionContext.Namespace PLEXUS_EXTENSION =
+            ExtensionContext.Namespace.create("PlexusExtension");
 
-    /**
-     *  The base directory for the test instance
-     */
-    private String testBasedir;
+    public static final String BASEDIR_KEY = "basedir";
+
+    private static final ThreadLocal<ExtensionContext> extensionContextThreadLocal = new ThreadLocal<>();
 
     static {
         if (System.getProperty("guice_custom_class_loading", "").trim().isEmpty()) {
@@ -84,41 +79,33 @@ public class PlexusExtension implements BeforeEachCallback, AfterEachCallback {
 
     @Override
     public void beforeEach(ExtensionContext context) throws Exception {
+        extensionContextThreadLocal.set(context);
+        setTestBasedir(getDefaultBasedir(), context);
 
-        setContext(context);
-
-        getContainer().addComponent(getContainer(), PlexusContainer.class.getName());
-
-        ((DefaultPlexusContainer) getContainer())
+        ((DefaultPlexusContainer) getContainer(context))
                 .addPlexusInjector(
                         Collections.emptyList(), binder -> binder.requestInjection(context.getRequiredTestInstance()));
     }
 
-    protected void setContext(ExtensionContext context) {
-        this.context = context;
-    }
-
-    protected void setupContainer() {
+    private PlexusContainer setupContainer(ExtensionContext context) {
         // ----------------------------------------------------------------------------
         // Context Setup
         // ----------------------------------------------------------------------------
 
-        DefaultContext context = new DefaultContext();
+        DefaultContext plexusContext = new DefaultContext();
+        plexusContext.put("basedir", getTestBasedir(context));
+        customizeContext(plexusContext);
 
-        context.put("basedir", getTestBasedir());
-
-        customizeContext(context);
-
-        boolean hasPlexusHome = context.contains("plexus.home");
+        boolean hasPlexusHome = plexusContext.contains("plexus.home");
 
         if (!hasPlexusHome) {
-            File f = getTestFile("target/plexus-home");
+            File f = new File(getTestBasedir(context), "target/plexus-home");
 
             if (!f.isDirectory()) {
                 f.mkdir();
             }
 
-            context.put("plexus.home", f.getAbsolutePath());
+            plexusContext.put("plexus.home", f.getAbsolutePath());
         }
 
         // ----------------------------------------------------------------------------
@@ -128,25 +115,29 @@ public class PlexusExtension implements BeforeEachCallback, AfterEachCallback {
         String config = getCustomConfigurationName();
 
         ContainerConfiguration containerConfiguration =
-                new DefaultContainerConfiguration().setName("test").setContext(context.getContextData());
+                new DefaultContainerConfiguration().setName("test").setContext(plexusContext.getContextData());
 
         if (config != null) {
             containerConfiguration.setContainerConfiguration(config);
         } else {
-            String resource = getConfigurationName(null);
-
+            String resource = getConfigurationName(context);
             containerConfiguration.setContainerConfiguration(resource);
         }
 
         customizeContainerConfiguration(containerConfiguration);
-        testInstanceCustomizeContainerConfiguration(containerConfiguration);
+        testInstanceCustomizeContainerConfiguration(containerConfiguration, context);
 
+        PlexusContainer container;
         try {
             container = new DefaultPlexusContainer(containerConfiguration);
+            container.addComponent(container, PlexusContainer.class.getName());
         } catch (PlexusContainerException e) {
             throw new IllegalArgumentException("Failed to create plexus container.", e);
         }
-        testInstanceCustomizeContainer(container);
+        testInstanceCustomizeContainer(container, context);
+        context.getStore(PLEXUS_EXTENSION).put(PlexusContainer.class, container);
+
+        return container;
     }
 
     /**
@@ -160,14 +151,15 @@ public class PlexusExtension implements BeforeEachCallback, AfterEachCallback {
         containerConfiguration.setClassPathScanning(PlexusConstants.SCANNING_INDEX);
     }
 
-    private void testInstanceCustomizeContainerConfiguration(ContainerConfiguration containerConfiguration) {
+    private void testInstanceCustomizeContainerConfiguration(
+            ContainerConfiguration containerConfiguration, ExtensionContext context) {
         Object testInstance = context.getRequiredTestInstance();
         if (testInstance instanceof PlexusTestConfiguration) {
             ((PlexusTestConfiguration) testInstance).customizeConfiguration(containerConfiguration);
         }
     }
 
-    private void testInstanceCustomizeContainer(PlexusContainer container) {
+    private void testInstanceCustomizeContainer(PlexusContainer container, ExtensionContext context) {
         Object testInstance = context.getRequiredTestInstance();
         if (testInstance instanceof PlexusTestConfiguration) {
             ((PlexusTestConfiguration) testInstance).customizeContainer(container);
@@ -176,28 +168,30 @@ public class PlexusExtension implements BeforeEachCallback, AfterEachCallback {
 
     protected void customizeContext(Context context) {}
 
-    protected PlexusConfiguration customizeComponentConfiguration() {
-        return null;
-    }
-
     @Override
     public void afterEach(ExtensionContext context) throws Exception {
+        PlexusContainer container =
+                context.getStore(PLEXUS_EXTENSION).remove(PlexusContainer.class, PlexusContainer.class);
         if (container != null) {
             container.dispose();
-
-            container = null;
         }
+        context.getStore(PLEXUS_EXTENSION).remove("testBasedir", String.class);
+        extensionContextThreadLocal.remove();
     }
 
     /**
      * The base directory for the test instance. By default, this is the same as the basedir.
      *
+     * @param context  the test execution context
+     *
      * @return the testBasedir
      * @since 1.7.0
      */
-    protected String getTestBasedir() {
+    protected String getTestBasedir(ExtensionContext context) {
+        String testBasedir = context.getStore(PLEXUS_EXTENSION).get(BASEDIR_KEY, String.class);
         if (testBasedir == null) {
-            testBasedir = getBasedir();
+            testBasedir = getDefaultBasedir();
+            context.getStore(PLEXUS_EXTENSION).put(BASEDIR_KEY, testBasedir);
         }
         return testBasedir;
     }
@@ -206,26 +200,20 @@ public class PlexusExtension implements BeforeEachCallback, AfterEachCallback {
      * Set the base directory for the test instance. By default, this is the same as the basedir.
      *
      * @param testBasedir the testBasedir for the test instance
+     * @param context  the test execution context
      * @since 1.7.0
      */
-    protected void setTestBasedir(String testBasedir) {
-        this.testBasedir = testBasedir;
+    protected void setTestBasedir(String testBasedir, ExtensionContext context) {
+        context.getStore(PLEXUS_EXTENSION).put(BASEDIR_KEY, testBasedir);
     }
 
-    public PlexusContainer getContainer() {
+    public PlexusContainer getContainer(ExtensionContext context) {
+        PlexusContainer container =
+                context.getStore(PLEXUS_EXTENSION).get(PlexusContainer.class, PlexusContainer.class);
         if (container == null) {
-            setupContainer();
+            return setupContainer(context);
         }
-
         return container;
-    }
-
-    protected InputStream getConfiguration() throws Exception {
-        return getConfiguration(null);
-    }
-
-    protected InputStream getConfiguration(String subname) throws Exception {
-        return getResourceAsStream(getConfigurationName(subname));
     }
 
     protected String getCustomConfigurationName() {
@@ -238,10 +226,9 @@ public class PlexusExtension implements BeforeEachCallback, AfterEachCallback {
      * this will produce a resource name of org/foo/FunTest.xml which would be used to
      * configure the Plexus container before running your test.
      *
-     * @param subname the subname
      * @return A configruation name
      */
-    protected String getConfigurationName(String subname) {
+    protected String getConfigurationName(ExtensionContext context) {
         Class<?> testClass = context.getRequiredTestClass();
         for (Class<?> clazz = testClass; clazz != null; clazz = clazz.getSuperclass()) {
             String name = clazz.getName().replace('.', '/') + ".xml";
@@ -250,40 +237,6 @@ public class PlexusExtension implements BeforeEachCallback, AfterEachCallback {
             }
         }
         return null;
-    }
-
-    protected InputStream getResourceAsStream(String resource) {
-        return context.getRequiredTestClass().getResourceAsStream(resource);
-    }
-
-    protected ClassLoader getClassLoader() {
-        return context.getRequiredTestClass().getClassLoader();
-    }
-
-    // ----------------------------------------------------------------------
-    // Container access
-    // ----------------------------------------------------------------------
-
-    @SuppressWarnings("unchecked")
-    protected <T> T lookup(String componentKey) throws ComponentLookupException {
-        return (T) getContainer().lookup(componentKey);
-    }
-
-    @SuppressWarnings("unchecked")
-    protected <T> T lookup(String role, String roleHint) throws ComponentLookupException {
-        return (T) getContainer().lookup(role, roleHint);
-    }
-
-    protected <T> T lookup(Class<T> componentClass) throws ComponentLookupException {
-        return getContainer().lookup(componentClass);
-    }
-
-    protected <T> T lookup(Class<T> componentClass, String roleHint) throws ComponentLookupException {
-        return getContainer().lookup(componentClass, roleHint);
-    }
-
-    protected void release(Object component) throws ComponentLifecycleException {
-        getContainer().release(component);
     }
 
     // ----------------------------------------------------------------------
@@ -312,12 +265,8 @@ public class PlexusExtension implements BeforeEachCallback, AfterEachCallback {
         return getTestFile(basedir, path).getAbsolutePath();
     }
 
-    public static String getBasedir() {
-        if (basedir != null) {
-            return basedir;
-        }
-
-        basedir = System.getProperty("basedir");
+    private static String getDefaultBasedir() {
+        String basedir = System.getProperty("basedir");
 
         if (basedir == null) {
             basedir = new File("").getAbsolutePath();
@@ -326,8 +275,10 @@ public class PlexusExtension implements BeforeEachCallback, AfterEachCallback {
         return basedir;
     }
 
-    public String getTestConfiguration() {
-        return getTestConfiguration(context.getRequiredTestClass());
+    public static String getBasedir() {
+        return Optional.ofNullable(extensionContextThreadLocal.get())
+                .map(ec -> ec.getStore(PLEXUS_EXTENSION).get(BASEDIR_KEY, String.class))
+                .orElseGet(PlexusExtension::getDefaultBasedir);
     }
 
     public static String getTestConfiguration(Class<?> clazz) {
