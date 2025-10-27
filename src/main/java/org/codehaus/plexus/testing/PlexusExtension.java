@@ -64,6 +64,23 @@ import org.junit.jupiter.api.extension.ExtensionContext;
  */
 public class PlexusExtension implements BeforeEachCallback, AfterEachCallback {
 
+    private static class PlexusClosableWrapper implements AutoCloseable {
+        private final PlexusContainer container;
+
+        PlexusClosableWrapper(PlexusContainer container) {
+            this.container = container;
+        }
+
+        @Override
+        public void close() {
+            container.dispose();
+        }
+
+        public PlexusContainer get() {
+            return container;
+        }
+    }
+
     private static final ExtensionContext.Namespace PLEXUS_EXTENSION =
             ExtensionContext.Namespace.create("PlexusExtension");
 
@@ -140,7 +157,7 @@ public class PlexusExtension implements BeforeEachCallback, AfterEachCallback {
             throw new IllegalArgumentException("Failed to create plexus container.", e);
         }
         testInstanceCustomizeContainer(container, context);
-        context.getStore(PLEXUS_EXTENSION).put(PlexusContainer.class, container);
+        context.getStore(PLEXUS_EXTENSION).put(PlexusClosableWrapper.class, new PlexusClosableWrapper(container));
 
         return container;
     }
@@ -175,11 +192,7 @@ public class PlexusExtension implements BeforeEachCallback, AfterEachCallback {
 
     @Override
     public void afterEach(ExtensionContext context) throws Exception {
-        PlexusContainer container =
-                context.getStore(PLEXUS_EXTENSION).remove(PlexusContainer.class, PlexusContainer.class);
-        if (container != null) {
-            container.dispose();
-        }
+        // empty method, not used
     }
 
     /**
@@ -211,12 +224,12 @@ public class PlexusExtension implements BeforeEachCallback, AfterEachCallback {
     }
 
     public PlexusContainer getContainer(ExtensionContext context) {
-        PlexusContainer container =
-                context.getStore(PLEXUS_EXTENSION).get(PlexusContainer.class, PlexusContainer.class);
+        PlexusClosableWrapper container =
+                context.getStore(PLEXUS_EXTENSION).get(PlexusClosableWrapper.class, PlexusClosableWrapper.class);
         if (container == null) {
             return setupContainer(context);
         }
-        return container;
+        return container.get();
     }
 
     protected String getCustomConfigurationName() {
