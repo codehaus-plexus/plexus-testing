@@ -79,7 +79,6 @@ public class PlexusExtension implements BeforeEachCallback, AfterEachCallback {
 
     @Override
     public void beforeEach(ExtensionContext context) throws Exception {
-        extensionContextThreadLocal.set(context);
         setTestBasedir(getDefaultBasedir(), context);
 
         ((DefaultPlexusContainer) getContainer(context))
@@ -88,6 +87,12 @@ public class PlexusExtension implements BeforeEachCallback, AfterEachCallback {
     }
 
     private PlexusContainer setupContainer(ExtensionContext context) {
+        // Store the context in a thread local for static access
+        // must be done hear as this method is always executed
+        extensionContextThreadLocal.set(context);
+        context.getStore(PLEXUS_EXTENSION)
+                .put("threadLocalCloseable", (AutoCloseable) extensionContextThreadLocal::remove);
+
         // ----------------------------------------------------------------------------
         // Context Setup
         // ----------------------------------------------------------------------------
@@ -175,8 +180,6 @@ public class PlexusExtension implements BeforeEachCallback, AfterEachCallback {
         if (container != null) {
             container.dispose();
         }
-        context.getStore(PLEXUS_EXTENSION).remove("testBasedir", String.class);
-        extensionContextThreadLocal.remove();
     }
 
     /**
