@@ -61,6 +61,7 @@
       <groupId>com.google.inject</groupId>
       <artifactId>guice</artifactId>
       <version>5.1.0</version>
+      <classifier>classes</classifier>
     </dependency>
     <!-- needed by Guava 33.4.3+ for javax.annotations.Nullable -->
     <dependency>
