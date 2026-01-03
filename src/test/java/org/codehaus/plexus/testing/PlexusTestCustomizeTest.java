@@ -22,6 +22,7 @@ package org.codehaus.plexus.testing;
 import javax.inject.Inject;
 
 import org.codehaus.plexus.PlexusContainer;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -61,6 +62,15 @@ class PlexusTestCustomizeTest implements PlexusTestConfiguration {
     void dependencyShouldBeInjected() {
         assertNotNull(testJavaxComponent);
         assertSame(testJavaxComponent.getTestComponent2(), mockComponent2);
+    }
+
+    @Nested
+    class NestedTest {
+        @Test
+        void nestedDependencyShouldAlsoBeInjected() {
+            assertNotNull(testJavaxComponent);
+            assertSame(testJavaxComponent.getTestComponent2(), mockComponent2);
+        }
     }
 }
 // END SNIPPET: test-customize-class

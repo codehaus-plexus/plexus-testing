@@ -21,6 +21,7 @@ package org.codehaus.plexus.testing;
 // START SNIPPET: test-class
 import javax.inject.Inject;
 
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -35,6 +36,15 @@ class PlexusTestJavaxTest {
     void dependencyShouldBeInjected() {
         assertNotNull(testJavaxComponent);
         assertNotNull(testJavaxComponent.getTestComponent2());
+    }
+
+    @Nested
+    class NestedTest {
+        @Test
+        void nestedDependencyShouldAlsoBeInjected() {
+            assertNotNull(testJavaxComponent);
+            assertNotNull(testJavaxComponent.getTestComponent2());
+        }
     }
 }
 // END SNIPPET: test-class

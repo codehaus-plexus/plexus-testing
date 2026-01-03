@@ -98,9 +98,9 @@ public class PlexusExtension implements BeforeEachCallback, AfterEachCallback {
     public void beforeEach(ExtensionContext context) throws Exception {
         setTestBasedir(getDefaultBasedir(), context);
 
-        ((DefaultPlexusContainer) getContainer(context))
-                .addPlexusInjector(
-                        Collections.emptyList(), binder -> binder.requestInjection(context.getRequiredTestInstance()));
+        context.getRequiredTestInstances().getAllInstances().forEach(testInstance -> ((DefaultPlexusContainer)
+                        getContainer(context))
+                .addPlexusInjector(Collections.emptyList(), binder -> binder.requestInjection(testInstance)));
     }
 
     private PlexusContainer setupContainer(ExtensionContext context) {
@@ -175,17 +175,19 @@ public class PlexusExtension implements BeforeEachCallback, AfterEachCallback {
 
     private void testInstanceCustomizeContainerConfiguration(
             ContainerConfiguration containerConfiguration, ExtensionContext context) {
-        Object testInstance = context.getRequiredTestInstance();
-        if (testInstance instanceof PlexusTestConfiguration) {
-            ((PlexusTestConfiguration) testInstance).customizeConfiguration(containerConfiguration);
-        }
+        context.getRequiredTestInstances().getAllInstances().forEach(testInstance -> {
+            if (testInstance instanceof PlexusTestConfiguration) {
+                ((PlexusTestConfiguration) testInstance).customizeConfiguration(containerConfiguration);
+            }
+        });
     }
 
     private void testInstanceCustomizeContainer(PlexusContainer container, ExtensionContext context) {
-        Object testInstance = context.getRequiredTestInstance();
-        if (testInstance instanceof PlexusTestConfiguration) {
-            ((PlexusTestConfiguration) testInstance).customizeContainer(container);
-        }
+        context.getRequiredTestInstances().getAllInstances().forEach(testInstance -> {
+            if (testInstance instanceof PlexusTestConfiguration) {
+                ((PlexusTestConfiguration) testInstance).customizeContainer(container);
+            }
+        });
     }
 
     protected void customizeContext(Context context) {}
