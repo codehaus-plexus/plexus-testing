@@ -18,7 +18,6 @@ inventing the same fixture.
 <dependency>
   <groupId>org.codehaus.plexus</groupId>
   <artifactId>plexus-testing</artifactId>
-  <version>2.1.0</version>
   <scope>test</scope>
 </dependency>
 ```
