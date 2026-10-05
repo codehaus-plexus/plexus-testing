@@ -7,8 +7,4 @@ on:
 
 jobs:
   update_release_draft:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: release-drafter/release-drafter@v7.7.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    uses: codehaus-plexus/.github/.github/workflows/release-drafter.yml@master
