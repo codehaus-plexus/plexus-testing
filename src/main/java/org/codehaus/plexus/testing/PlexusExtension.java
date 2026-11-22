@@ -228,7 +228,7 @@ public class PlexusExtension implements BeforeEachCallback, AfterEachCallback {
      * this will produce a resource name of org/foo/FunTest.xml which would be used to
      * configure the Plexus container before running your test.
      *
-     * @return A configruation name
+     * @return A configuration name, or {@code null} when no such resource exists
      */
     protected String getConfigurationName(ExtensionContext context) {
         Class<?> testClass = context.getRequiredTestClass();

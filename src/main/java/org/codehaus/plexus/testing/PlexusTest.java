@@ -27,7 +27,10 @@ import java.lang.annotation.Target;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
- * Plexus test
+ * Marks a JUnit 5 test class to run with a Plexus container: before each test method a container is
+ * created with {@link PlexusExtension} and the {@code @Inject} fields of the test instance, including
+ * those of nested classes, are populated from it. Implement {@link PlexusTestConfiguration} on the
+ * test class to customize the container.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @ExtendWith(PlexusExtension.class)
